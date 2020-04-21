@@ -25,7 +25,7 @@ public class ChatClient extends ChatWindow {
 	private JButton connectB;
 	private JTextField messageTxt;
 	private JButton sendB;
-	private JButton setName;
+	private JButton setNameBtn;
 
 	public ChatClient(){
 		super();
@@ -39,11 +39,12 @@ public class ChatClient extends ChatWindow {
 		nameTxt = new JTextField("Name");
 		nameTxt.setColumns(10);
 		connectB = new JButton("Connect");
-		//setName = new JButton("Set Name");
+		//setNameBtn = new JButton("Set Name");
 		JPanel topPanel = new JPanel();
 		topPanel.add(serverTxt);
 		topPanel.add(nameTxt);
 		topPanel.add(connectB);
+		//topPanel.add(setNameBtn);
 		contentPane.add(topPanel, BorderLayout.NORTH);
 
 		// GUI elements and panel at bottom of window
@@ -53,7 +54,7 @@ public class ChatClient extends ChatWindow {
 		JPanel botPanel = new JPanel();
 		botPanel.add(messageTxt);
 		botPanel.add(sendB);
-		contentPane.add(botPanel, BorderLayout.SOUTH);
+		//contentPane.add(botPanel, BorderLayout.SOUTH);
 
 		// Resize window to fit all GUI components
 		this.pack();
@@ -62,6 +63,7 @@ public class ChatClient extends ChatWindow {
 		Communicator comm = new Communicator();
 		connectB.addActionListener(comm);
 		sendB.addActionListener(comm);
+		//setNameBtn.addActionListener(comm);
 
 	}
 
@@ -78,7 +80,7 @@ public class ChatClient extends ChatWindow {
 			if(actionEvent.getActionCommand().compareTo("Connect") == 0) {
 				connect();
 			}
-			else if(actionEvent.getActionCommand().compareTo("Send") == 0) {
+			if(actionEvent.getActionCommand().compareTo("Send") == 0) {
 				sendMsg(messageTxt.getText());
 				try {
 					readMsg();
@@ -107,10 +109,11 @@ public class ChatClient extends ChatWindow {
 				writer = new PrintWriter(socket.getOutputStream(), true);
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				String name = nameTxt.getText();
+				sendMsg(name + " joined the room");
 				readMsg();
 				sendMsg("Hello server");
 				readMsg();
-				connected=true;
+				connected = true;
 
 			}
 			catch(IOException e) {
