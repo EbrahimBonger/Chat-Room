@@ -7,13 +7,14 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * YOUR NAME HERE
  */
 public class ChatServer extends ChatWindow {
-
-	private ClientHandler handler;
+	private ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
+	//private ClientHandler handler;
 
 	public ChatServer(){
 		super();
@@ -29,9 +30,11 @@ public class ChatServer extends ChatWindow {
 				// The method accept() blocks until a client connects.
 				printMsg("Waiting for a connection");
 				Socket socket = srv.accept();
-
+				ClientHandler handler = new ClientHandler(socket);
+				clients.add(handler);
 				handler = new ClientHandler(socket);
-				handler.handleConnection();
+				//handler.handleConnection();
+				handler.connect();
 			}
 
 		} catch (IOException e) {
@@ -40,7 +43,7 @@ public class ChatServer extends ChatWindow {
 	}
 
 	/** This innter class handles communication to/from one client. */
-	class ClientHandler {
+	class ClientHandler implements Runnable {
 		private PrintWriter writer;
 		private BufferedReader reader;
 
@@ -60,7 +63,8 @@ public class ChatServer extends ChatWindow {
 			try {
 				while(true) {
 					// read a message from the client
-					readMsg();
+					//readMsg();
+					sendMsg(readMsg());
 				}
 			}
 			catch (IOException e){
@@ -70,17 +74,29 @@ public class ChatServer extends ChatWindow {
 		}
 
 		/** Receive and display a message */
-		public void readMsg() throws IOException {
+		public String readMsg() throws IOException {
 			String s = reader.readLine();
 			printMsg(s);
-			sendMsg(s);
+			//sendMsg(s);
+			return s;
 		}
 		/** Send a string */
 		public void sendMsg(String s){
-			writer.println(s);
+			//writer.println(s);
+			for(ClientHandler client: clients){
+				client.writer.println(s);
+			}
 
 		}
+		public void connect(){
+			Thread th = new Thread(this);
+			th.start();
+		}
 
+		@Override
+		public void run() {
+			handleConnection();
+		}
 	}
 
 	public static void main(String args[]){

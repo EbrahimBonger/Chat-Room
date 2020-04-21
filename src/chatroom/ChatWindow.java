@@ -18,7 +18,7 @@ public class ChatWindow extends JFrame {
 		textArea.setLineWrap(true);
 		textArea.setColumns(55);
 		contentPane = this.getContentPane();
-		this.setSize(500, 500);
+		this.setSize(400, 400);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JScrollPane textScroller = new JScrollPane(textArea);
 		textScroller.setPreferredSize(new Dimension(400, 400));

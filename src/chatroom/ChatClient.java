@@ -25,6 +25,7 @@ public class ChatClient extends ChatWindow {
 	private JButton connectB;
 	private JTextField messageTxt;
 	private JButton sendB;
+	private JButton sendB2;
 	private JButton setNameBtn;
 
 	public ChatClient(){
@@ -39,12 +40,13 @@ public class ChatClient extends ChatWindow {
 		nameTxt = new JTextField("Name");
 		nameTxt.setColumns(10);
 		connectB = new JButton("Connect");
-		//setNameBtn = new JButton("Set Name");
+		setNameBtn = new JButton("Set name");
 		JPanel topPanel = new JPanel();
 		topPanel.add(serverTxt);
 		topPanel.add(nameTxt);
+		topPanel.add(setNameBtn);
 		topPanel.add(connectB);
-		//topPanel.add(setNameBtn);
+
 		contentPane.add(topPanel, BorderLayout.NORTH);
 
 		// GUI elements and panel at bottom of window
@@ -54,7 +56,7 @@ public class ChatClient extends ChatWindow {
 		JPanel botPanel = new JPanel();
 		botPanel.add(messageTxt);
 		botPanel.add(sendB);
-		//contentPane.add(botPanel, BorderLayout.SOUTH);
+		contentPane.add(botPanel, BorderLayout.SOUTH);
 
 		// Resize window to fit all GUI components
 		this.pack();
@@ -63,12 +65,12 @@ public class ChatClient extends ChatWindow {
 		Communicator comm = new Communicator();
 		connectB.addActionListener(comm);
 		sendB.addActionListener(comm);
-		//setNameBtn.addActionListener(comm);
+		setNameBtn.addActionListener(comm);
 
 	}
 
 	/** This inner class handles communication with the server. */
-	class Communicator implements ActionListener{
+	class Communicator implements ActionListener, Runnable{
 		private Socket socket;
 		private PrintWriter writer;
 		private BufferedReader reader;
@@ -130,7 +132,26 @@ public class ChatClient extends ChatWindow {
 		}
 		/** Send a string */
 		public void sendMsg(String s){
-			writer.println(s);
+			//writer.println(s);
+			if(s.startsWith("/name")){
+				String newName = s.substring(6);
+				writer.println(nameTxt.getText() + " has changed their nickname to " + newName);
+				nameTxt.setText(newName);
+			}
+			else{
+				writer.println(nameTxt.getText() + ": " + s);
+			}
+		}
+
+		@Override
+		public void run() {
+			try{
+				while (true){
+					readMsg();
+				}
+			}catch (IOException e){
+				printMsg("\nERROR:" + e.getLocalizedMessage() + "\n");
+			}
 		}
 	}
 
