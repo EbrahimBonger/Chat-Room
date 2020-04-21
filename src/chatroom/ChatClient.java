@@ -25,6 +25,7 @@ public class ChatClient extends ChatWindow {
 	private JButton connectB;
 	private JTextField messageTxt;
 	private JButton sendB;
+	private JButton setName;
 
 	public ChatClient(){
 		super();
@@ -38,6 +39,7 @@ public class ChatClient extends ChatWindow {
 		nameTxt = new JTextField("Name");
 		nameTxt.setColumns(10);
 		connectB = new JButton("Connect");
+		//setName = new JButton("Set Name");
 		JPanel topPanel = new JPanel();
 		topPanel.add(serverTxt);
 		topPanel.add(nameTxt);
@@ -69,6 +71,7 @@ public class ChatClient extends ChatWindow {
 		private PrintWriter writer;
 		private BufferedReader reader;
 		private int port = 2113;
+		private boolean connected = false;
 
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
@@ -77,6 +80,21 @@ public class ChatClient extends ChatWindow {
 			}
 			else if(actionEvent.getActionCommand().compareTo("Send") == 0) {
 				sendMsg(messageTxt.getText());
+				try {
+					readMsg();
+				}
+				catch (IOException e) {
+					printMsg("\nERROR:" + e.getLocalizedMessage() + "\n");
+				}
+			}
+			if(actionEvent.getActionCommand().compareTo("Set name") == 0 && connected){
+				sendMsg("Client set name to " + nameTxt.getText());
+				try {
+					readMsg();
+				}
+				catch (IOException e) {
+					printMsg("\nERROR:" + e.getLocalizedMessage() + "\n");
+				}
 			}
 		}
 
@@ -88,14 +106,20 @@ public class ChatClient extends ChatWindow {
 				printMsg("Connection made to " + serverIP);
 				writer = new PrintWriter(socket.getOutputStream(), true);
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
+				String name = nameTxt.getText();
+				readMsg();
 				sendMsg("Hello server");
+				readMsg();
+				connected=true;
 
 			}
 			catch(IOException e) {
 				printMsg("\nERROR:" + e.getLocalizedMessage() + "\n");
 			}
+
 		}
+
+
 		/** Receive and display a message */
 		public void readMsg() throws IOException {
 			String s = reader.readLine();

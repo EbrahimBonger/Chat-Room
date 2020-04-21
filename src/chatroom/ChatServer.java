@@ -50,10 +50,11 @@ public class ChatServer extends ChatWindow {
 				printMsg("Connection made to " + serverIP);
 				writer = new PrintWriter(socket.getOutputStream(), true);
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
 			}
 			catch (IOException e){
-					printMsg("\nERROR:" + e.getLocalizedMessage() + "\n");
-				}
+				printMsg("\nERROR:" + e.getLocalizedMessage() + "\n");
+			}
 		}
 		public void handleConnection() {
 			try {
@@ -65,16 +66,19 @@ public class ChatServer extends ChatWindow {
 			catch (IOException e){
 				printMsg("\nERROR:" + e.getLocalizedMessage() + "\n");
 			}
+
 		}
 
 		/** Receive and display a message */
 		public void readMsg() throws IOException {
 			String s = reader.readLine();
 			printMsg(s);
+			sendMsg(s);
 		}
 		/** Send a string */
 		public void sendMsg(String s){
 			writer.println(s);
+
 		}
 
 	}
