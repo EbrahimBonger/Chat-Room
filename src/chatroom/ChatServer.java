@@ -34,6 +34,7 @@ public class ChatServer extends ChatWindow {
 				clients.add(handler);
 				handler = new ClientHandler(socket);
 				//handler.handleConnection();
+				System.out.println("s: " + socket);
 				handler.connect();
 			}
 
@@ -42,7 +43,7 @@ public class ChatServer extends ChatWindow {
 		}
 	}
 
-	/** This innter class handles communication to/from one client. */
+	/** This inner class handles communication to/from one client. */
 	class ClientHandler implements Runnable {
 		private PrintWriter writer;
 		private BufferedReader reader;
@@ -54,6 +55,9 @@ public class ChatServer extends ChatWindow {
 				writer = new PrintWriter(socket.getOutputStream(), true);
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+				//readMsg();
+				//readMsg();
+
 			}
 			catch (IOException e){
 				printMsg("\nERROR:" + e.getLocalizedMessage() + "\n");
@@ -63,7 +67,6 @@ public class ChatServer extends ChatWindow {
 			try {
 				while(true) {
 					// read a message from the client
-					//readMsg();
 					sendMsg(readMsg());
 				}
 			}
@@ -73,10 +76,22 @@ public class ChatServer extends ChatWindow {
 
 		}
 
+		/** Echo the message to all clients **/
+		public void echoMsg(String s) throws IOException {
+			s = readMsg();
+			if(clients.size() > 1){
+				for(ClientHandler client: clients){
+					client.writer.println(s);
+				}
+			}
+
+		}
+
 		/** Receive and display a message */
 		public String readMsg() throws IOException {
 			String s = reader.readLine();
 			printMsg(s);
+			//echoMsg(s);
 			//sendMsg(s);
 			return s;
 		}
@@ -86,7 +101,6 @@ public class ChatServer extends ChatWindow {
 			for(ClientHandler client: clients){
 				client.writer.println(s);
 			}
-
 		}
 		public void connect(){
 			Thread th = new Thread(this);

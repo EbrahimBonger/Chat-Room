@@ -84,38 +84,32 @@ public class ChatClient extends ChatWindow {
 			}
 			if(actionEvent.getActionCommand().compareTo("Send") == 0) {
 				sendMsg(messageTxt.getText());
-				try {
-					readMsg();
-				}
-				catch (IOException e) {
-					printMsg("\nERROR:" + e.getLocalizedMessage() + "\n");
-				}
+
 			}
 			if(actionEvent.getActionCommand().compareTo("Set name") == 0 && connected){
 				sendMsg("Client set name to " + nameTxt.getText());
-				try {
-					readMsg();
-				}
-				catch (IOException e) {
-					printMsg("\nERROR:" + e.getLocalizedMessage() + "\n");
-				}
 			}
 		}
 
 		/** Connect to the remote server and setup input/output streams. */
 		public void connect(){
 			try {
+				String name = nameTxt.getText();
 				socket = new Socket(serverTxt.getText(), port);
 				InetAddress serverIP = socket.getInetAddress();
-				printMsg("Connection made to " + serverIP);
+				printMsg("Connection made  under IP: " + serverIP);
 				writer = new PrintWriter(socket.getOutputStream(), true);
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				String name = nameTxt.getText();
-				sendMsg(name + " joined the room");
-				readMsg();
-				sendMsg("Hello server");
-				readMsg();
+
+				sendMsg(" joined the room");
+				//readMsg();
+				//sendMsg("Hello server");
+				//sendMsg("Client " + name + " made a connection under IP: " + serverIP);
+				//readMsg();
 				connected = true;
+
+				Thread th = new Thread(this);
+				th.start();
 
 			}
 			catch(IOException e) {
