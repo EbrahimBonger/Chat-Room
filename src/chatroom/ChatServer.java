@@ -96,7 +96,7 @@ public class ChatServer extends ChatWindow {
 				client.writer.println(s);
 			}
 		}
-		/**initialize and activate a new thread  **/
+		/**initialize and activate a new thread **/
 		public void connect(){
 			Thread th = new Thread(this);
 			th.start();
