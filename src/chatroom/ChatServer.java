@@ -102,7 +102,6 @@ public class ChatServer extends ChatWindow {
 			th.start();
 		}
 
-
 		/**Override the run method and implement
 		 * the multi threading function for the desired class
 		 **/
