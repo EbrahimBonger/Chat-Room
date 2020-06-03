@@ -1,4 +1,7 @@
 ## README
+
+The project has been implemented to allow multiple users to chat in one platform. The application has a multi-threading system on both client and server-side. The multi-threading system is critical for the entire system. It allows the user to communicate and update their status dynamically without any delay.
+
 ![](demo/chat%20room%20demo.gif)
 
 ### Chat Room Requirements
